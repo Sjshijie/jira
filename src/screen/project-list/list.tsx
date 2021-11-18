@@ -1,7 +1,7 @@
 import { User } from './search-panel'
-import { Table } from 'antd'
+import { Table, TableProps } from 'antd'
 import dayjs from 'dayjs'
-interface Project {
+export interface Project {
     id:string,
     name:string,
     personId:string,
@@ -10,14 +10,13 @@ interface Project {
     created:number
 }
 
-interface ListProps{
-    list:Project[],
+interface ListProps extends TableProps<Project>{
     users:User[]
     
 }
 
-export default ({ list, users }:ListProps) => {
-    return <Table pagination={false} rowKey={record=>record.id} columns={[{
+export default ({ users, ...props }:ListProps) => {
+    return <Table pagination={false} rowKey={record=>record.id} {...props} columns={[{
         title:'名称',
         dataIndex:'name',
         sorter(a,b){
@@ -45,5 +44,5 @@ export default ({ list, users }:ListProps) => {
             </span>
           );
         },
-    },]} dataSource={list}/>
+    },]}/>
 }
