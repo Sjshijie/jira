@@ -3,6 +3,8 @@ import * as auth from 'authProvider'
 import { User } from 'screen/project-list/search-panel';
 import { http } from 'utils/http';
 import { useMount } from 'utils';
+import { useAysnc } from 'utils/use-async';
+import { FullPageErrorFallback, FullPageLoding } from 'components/lib';
 interface AuthForm {
     username: string,
     password: string
@@ -29,16 +31,21 @@ const bootstrapUser =async ()=>{
 }
 
 export const AuthProvider = ({children}:{children:ReactNode})=>{
-    const [user,setUser] = useState<User | null>(null)
-
+    const {data:user,error,isLoading,isIdle,isError,run,setData:setUser} = useAysnc<User | null>()
     const login = (form:AuthForm)=> auth.login(form).then(setUser)
     const register = (form:AuthForm)=> auth.register(form).then(setUser)
     const logout = ()=> auth.logout().then(()=>setUser(null))
 
     useMount(()=>{
-        bootstrapUser().then(setUser)
+        run(bootstrapUser())
     })
+    if(isIdle || isLoading){
+        return <FullPageLoding />
+    }
 
+    if(isError){
+        return <FullPageErrorFallback error={error} />
+    }
 
     return (
         <AuthContext.Provider value={{user,login,register,logout}}>

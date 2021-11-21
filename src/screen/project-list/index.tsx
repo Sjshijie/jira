@@ -7,6 +7,7 @@ import styled from '@emotion/styled'
 import { Typography } from 'antd'
 import {useProjects} from '../../utils/project'
 import {useUsers} from '../../utils/users'
+import { useDocumentateTitle } from 'components/lib'
 const apiUrl=process.env.REACT_APP_API_URL
 export default () => {
     
@@ -14,6 +15,7 @@ export default () => {
         name: "",
         personId: ''
     })
+    useDocumentateTitle('项目列表',false);
     const debounceParam=useDebounce(param,200)
     const {error,data,isLoading} = useProjects(debounceParam)
     const users = useUsers()

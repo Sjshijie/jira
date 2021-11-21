@@ -12,7 +12,12 @@ const defaultInitialState:State<null>={
     error:null
 }
 
-export const useAysnc = <D>(initialState?:State<D>)=>{
+const defaultConfig = {
+    throwOnError:false,
+}
+
+export const useAysnc = <D>(initialState?:State<D>,defaultInitialConfig?:typeof defaultConfig)=>{
+    const config = {...defaultInitialConfig}
     const [state,setState]=useState<State<D>>({
         ...defaultInitialState,
         ...initialState
@@ -36,6 +41,7 @@ export const useAysnc = <D>(initialState?:State<D>)=>{
             return data
         }).catch(err=>{
             setError(err)
+            if(config.throwOnError) return Promise.reject(err)
             return err
         })
         
