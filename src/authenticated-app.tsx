@@ -1,27 +1,47 @@
 import { useAuth } from "context/auth-context"
-import { useState } from "react"
+import React, { useState } from "react"
 import ProjectListScreen from 'screen/project-list'
+import { ProjectScreen } from 'screen/project'
 import styled from '@emotion/styled'
 import { Row } from "components/lib";
 import { ReactComponent as SoftwareLogo } from "assets/software-logo.svg";
 import {Dropdown,Menu,Button} from 'antd'
+import {Navigate, Route, Routes } from 'react-router'
+import { BrowserRouter as Router, useNavigate } from 'react-router-dom'
+
 export const AuthenticatedApp = ()=>{
-    const {logout} = useAuth()
+    
     return (
         <div>
-            <Header between={true}>
-                <HeaderLeft gap={true}>
-                    <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"}/>
-                </HeaderLeft>
-                <HeaderRight>
-                    <User />
-                </HeaderRight>
-            </Header>
+            <PageHeader />
             <Main>
-                <ProjectListScreen />
+                <Router>
+                  <Routes>
+                    <Route path={'/projects'} element={<ProjectListScreen />}></Route>
+                    <Route path={'/projects/:projectId/*'} element={<ProjectScreen />}></Route>
+                    <Route index element={<ProjectListScreen />}></Route>
+                  </Routes>
+                </Router>
+                
             </Main>
         </div>
     )
+}
+
+const PageHeader = () => {
+  const {logout, user} = useAuth()
+  return (
+    <Header between={true}>
+      <HeaderLeft gap={true}>
+          <Button type='link' onClick={ ()=>window.location.href =  window.location.origin}>
+            <SoftwareLogo width={"18rem"} color={"rgb(38, 132, 255)"}/>
+          </Button>
+      </HeaderLeft>
+      <HeaderRight>
+          <User />
+      </HeaderRight>
+    </Header>
+  )
 }
 
 
