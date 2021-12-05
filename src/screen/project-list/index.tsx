@@ -14,21 +14,21 @@ const ProjectListScreen =  () => {
     const [param,setParam] = useUrlQueryParam(['name','personId'])
     useDocumentateTitle('项目列表',false);
     const debounceParam=useDebounce(param,200)
-    const {error,data,isLoading} = useProjects(debounceParam)
+    const {error,data,isLoading,retry} = useProjects(debounceParam)
     const users = useUsers()
     
     return (
         <Container>
-            <h1>项目列表</h1>
+            <h1 onClick={retry}>项目列表</h1>
             <SearchPanel param={param} setParam={setParam} users={users}/>
             {error?<Typography.Text type={'danger'}>{error.message}</Typography.Text>:null}
-            <List dataSource={data || []} users={users} loading={isLoading}/>
+            <List refresh={retry} dataSource={data || []} users={users} loading={isLoading}/>
         </Container>
     )
 
 }
 
-ProjectListScreen.whyDidYouRender = true
+ProjectListScreen.whyDidYouRender = false
 
 export default ProjectListScreen;
 

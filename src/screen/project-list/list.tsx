@@ -14,7 +14,8 @@ export interface Project {
 }
 
 interface ListProps extends TableProps<Project>{
-    users:User[]
+    users:User[],
+    refresh?:()=>void
     
 }
 
@@ -25,7 +26,7 @@ export default ({ users, ...props }:ListProps) => {
         title:<Pin checked={true} disabled={true}/>,
         render(value,project){
             return <Pin checked={project.pin} onCheckedChange={pin=>{
-                mutate({id:project.id,pin})
+                mutate({id:project.id,pin}).then(()=>props?.refresh?.())
             }}/>
         }
     },

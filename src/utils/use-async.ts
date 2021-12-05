@@ -34,8 +34,15 @@ export const useAysnc = <D>(initialState?:State<D>,defaultInitialConfig?:typeof 
         error:error
     })
 
-    const run = async (promise:Promise<D>) =>{
+    const [retry, setRetry] = useState(() => () => {})
+
+    const run = async (promise:Promise<D>,retryConfig?:{retry:()=>Promise<D>}) =>{
         setState({...state,stat:'loading'})
+        setRetry(() => () => {
+            if(retryConfig){
+                run(retryConfig?.retry(),retryConfig)
+            }
+        })
         return promise.then(data=>{
             setData(data)
             return data
@@ -55,6 +62,7 @@ export const useAysnc = <D>(initialState?:State<D>,defaultInitialConfig?:typeof 
         run,
         setData,
         setError,
+        retry,
         ...state
     }
 

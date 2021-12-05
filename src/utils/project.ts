@@ -8,7 +8,7 @@ export const useProjects = (param?:Partial<Project>)=>{
     const client = useHttp()
     const {run,...result} = useAysnc<Project[]>()
     useEffect(() => {
-        run(client('projects',{data:cleanObject(param || {} )}))
+        run(client('projects',{data:cleanObject(param || {} )}),{retry:()=>client('projects',{data:cleanObject(param || {} )})})
     }, [param])
     return result
 
